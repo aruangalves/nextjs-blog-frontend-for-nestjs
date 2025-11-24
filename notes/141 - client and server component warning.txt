@@ -1,0 +1,19 @@
+Remember that every client component, defined at the top as:
+'use client';
+Will transform any imported component as a client component, regardless if these components were set as server or child components in their own function definitions.
+
+A way to avoid this behavior is to NOT directly import these components inside your client component, just pass them as a {children} parameter. Example:
+
+'use client'
+
+export function ClientComponent({children}: {children: React.ReactNode}){
+  return (
+    <div>
+       YOUR CLIENT COMPONENT
+       {children}
+    </div>
+  );
+
+}
+
+Any component inside {children} will remain in their default mode (server or client).

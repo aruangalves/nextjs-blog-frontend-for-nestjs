@@ -1,0 +1,12 @@
+NextJS components by default use server side rendering, which implies that behavior that wouldn't work on React components such as async components are allowed.
+Keep in mind that while defining "use client", to avoid parsing sensitive information on it (e.g. "SECRET_KEY"). This info may leak and become accessible during client rendering.
+
+Interactivity, event handlers, window manipulation and local storage are disallowed during server rendering. This code will break with server rendering:
+<h1
+onClick={() => alert(123)}
+>
+  EXAMPLE TITLE TEXT
+</h1>
+To convert to an entire component to Client Component, define:
+'use client';
+On top of component file

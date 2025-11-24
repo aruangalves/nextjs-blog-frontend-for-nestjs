@@ -1,0 +1,11 @@
+Run:
+
+npx drizzle-kit generate
+
+On root project folder to generate the posts table.
+
+Then run:
+
+npx tsx ./src/db/drizzle/seed.ts
+
+To populate the regenerated table and run project.
