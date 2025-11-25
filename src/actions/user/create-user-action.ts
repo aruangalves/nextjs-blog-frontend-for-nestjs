@@ -5,7 +5,9 @@ import {
   PublicUserDto,
   PublicUserSchema,
 } from '@/lib/user/schemas';
+import { apiRequest } from '@/utils/api-request';
 import { getZodErrorMessages } from '@/utils/get-zod-error-msgs';
+import { redirect } from 'next/navigation';
 import { formatError } from 'zod';
 
 type CreateUserActionState = {
@@ -38,39 +40,30 @@ export async function createUserAction(
   }
 
   //fetch API from NestJS backend
-  const apiUrl = process.env.API_URL || 'http://localhost:3001';
+  const createResponse = await apiRequest<PublicUserDto>('/user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(parsedFormData.data),
+  });
 
-  try {
-    const response = await fetch(`${apiUrl}/user`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(parsedFormData.data),
-    });
-
-    const jsonResponse = await response.json();
-
-    if (!response.ok) {
-      return {
-        user: PublicUserSchema.parse(formObj),
-        errors: jsonResponse.message,
-        success: false,
-      };
-    }
-
+  if (!createResponse.success) {
     return {
       user: PublicUserSchema.parse(formObj),
-      errors: [],
-      success: true,
-    };
-  } catch (e) {
-    console.log(e);
-
-    return {
-      user: PublicUserSchema.parse(formObj),
-      errors: ['Falha de conexão com o servidor.'],
-      success: false,
+      errors: createResponse.errors,
+      success: createResponse.success,
     };
   }
+
+  redirect('/login?created=1');
+
+  //unreachable code
+  /*
+  return {
+    user: PublicUserSchema.parse(formObj),
+    errors: [],
+    success: createResponse.success,
+  };
+  */
 }

@@ -4,6 +4,7 @@ import { loginAction } from '@/actions/login/login-action';
 import { Button } from '@/components/Button';
 import { InputText } from '@/components/InputText';
 import { LogInIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useActionState } from 'react';
 
 export function LoginForm() {
@@ -37,6 +38,15 @@ export function LoginForm() {
       <Button disabled={isPending} type='submit' className='mt-8'>
         <LogInIcon /> Entrar
       </Button>
+
+      <p className='text-sm/tight'>
+        <Link href={'/user/new'} className='group'>
+          Não possui cadastro?{' '}
+          <span className='underline group-hover:no-underline'>
+            Clique aqui para criar sua conta.
+          </span>
+        </Link>
+      </p>
 
       {!!loginState.error && (
         <p className='text-red-700 text-center p-4 mt-4 bg-slate-100 rounded-[0.5rem] border border-slate-300'>
