@@ -68,9 +68,9 @@ export function CreateUserForm() {
         {isPending && 'Cadastrando usuário...'}
       </Button>
       <p className='text-sm/tight'>
-        <Link href={'/login'}>
+        <Link href={'/login'} className='group'>
           Já possui cadastro?{' '}
-          <span className='underline hover:no-underline'>
+          <span className='underline group-hover:no-underline'>
             Clique aqui para entrar.
           </span>
         </Link>
