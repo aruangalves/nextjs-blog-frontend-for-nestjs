@@ -3,7 +3,6 @@
 import { getLoginSessionFromApi } from '@/lib/login/manage-login';
 import { PublicPostForApiDto } from '@/lib/post/schemas';
 import { authenticatedApiRequest } from '@/utils/authenticated-api-request';
-import { error } from 'console';
 import { revalidateTag } from 'next/cache';
 
 export async function deletePostAction(id: string) {
