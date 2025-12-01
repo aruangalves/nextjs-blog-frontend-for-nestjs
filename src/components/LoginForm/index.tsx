@@ -5,7 +5,9 @@ import { Button } from '@/components/Button';
 import { InputText } from '@/components/InputText';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export function LoginForm() {
   const initialState = {
@@ -16,6 +18,29 @@ export function LoginForm() {
     loginAction,
     initialState,
   );
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const userChanged = searchParams.get('userChanged');
+  const created = searchParams.get('created');
+
+  useEffect(() => {
+    if (userChanged === '1') {
+      toast.dismiss();
+      toast.success('Seu usuário foi modificado. Faça login novamente.');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('userChanged');
+      router.replace(url.toString());
+    }
+
+    if (created === '1') {
+      toast.dismiss();
+      toast.success('Seu usuário foi criado.');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('created');
+      router.replace(url.toString());
+    }
+  }, [userChanged, created, router]);
 
   return (
     <form action={action} className='flex-1 flex flex-col gap-4 pb-8'>
