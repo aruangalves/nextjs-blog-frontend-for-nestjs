@@ -1,6 +1,6 @@
 import { ManagePostForm } from '@/components/Admin/ManagePostForm';
-import { makePartialPublicPost } from '@/dto/post/dto';
-import { findPostByIdAdmin } from '@/lib/post/queries/admin';
+import { findPostByIdFromApiAdmin } from '@/lib/post/queries/admin';
+import { PublicPostForApiSchema } from '@/lib/post/schemas';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -20,11 +20,14 @@ export default async function AdminPostIdPage({
   params,
 }: AdminPostIdPageProps) {
   const { id } = await params;
-  const post = await findPostByIdAdmin(id).catch(() => undefined);
+  const postsResponse = await findPostByIdFromApiAdmin(id);
 
-  if (!post) notFound();
+  if (!postsResponse.success) {
+    notFound();
+  }
 
-  const publicPost = makePartialPublicPost(post);
+  const post = postsResponse.data;
+  const publicPost = PublicPostForApiSchema.parse(post);
 
   return (
     <div className='pb-8'>

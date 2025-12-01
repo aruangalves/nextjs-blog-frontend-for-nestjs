@@ -9,7 +9,7 @@ export const findPostByIdAdmin = cache(async (id: string) => {
 
 export const findPostByIdFromApiAdmin = cache(async (id: string) => {
   const postsResponse = await authenticatedApiRequest<PostModelFromApi>(
-    `/posts/me/${id}`,
+    `/post/me/${id}`,
     {
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
