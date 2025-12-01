@@ -1,10 +1,28 @@
 import { PostDate } from '../../PostDate';
-import { findAllPostsAdmin } from '@/lib/post/queries/admin';
+import { findAllPostsFromApiAdmin } from '@/lib/post/queries/admin';
 import Link from 'next/link';
 import { DeletePostButtonAdmin } from '../DeletePostButtonAdmin';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export async function PostListAdmin() {
-  const posts = await findAllPostsAdmin();
+  const postsResponse = await findAllPostsFromApiAdmin();
+
+  if (!postsResponse.success && postsResponse.status === 404) {
+    return (
+      <div className='grid grid-cols-1 gap-8'>
+        The blog still doesn&apos;t have any posts
+      </div>
+    );
+  } else if (!postsResponse.success) {
+    return (
+      <ErrorMessage
+        contentTitle='Erro de autenticação'
+        message='Tente fazer login novamente.'
+      />
+    );
+  }
+
+  const posts = postsResponse.data;
 
   if (posts.length > 0) {
     return (
