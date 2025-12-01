@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import sanitizeHtml from 'sanitize-html';
 import { isUrlOrRelativePath } from '@/utils/is-url-or-relative-path';
-import { title } from 'process';
 import { PublicUserSchema } from '../user/schemas';
 
 const PostBaseSchema = z.object({
