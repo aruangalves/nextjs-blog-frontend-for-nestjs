@@ -1,10 +1,17 @@
 import { PostCoverImage } from '../PostCoverImage';
 import { PostHeading } from '../PostHeading';
-import { findAllPublicPostsCached } from '@/lib/post/queries/public';
+import { findAllPublicPostsFromApiCached } from '@/lib/post/queries/public';
 import { PostDate } from '../PostDate';
 
 export async function PostList() {
-  const posts = await findAllPublicPostsCached();
+  const postResponse = await findAllPublicPostsFromApiCached();
+  if (!postResponse.success) {
+    return (
+      <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'></div>
+    );
+  }
+
+  const posts = postResponse.data;
 
   if (posts.length > 0) {
     return (
