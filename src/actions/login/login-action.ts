@@ -1,9 +1,11 @@
 'use server';
 
+import { createLoginSessionFromApi } from '@/lib/login/manage-login';
 import { LoginSchema } from '@/lib/login/schema';
 import { apiRequest } from '@/utils/api-request';
 import { asyncDelay } from '@/utils/async-delay';
 import { getZodErrorMessages } from '@/utils/get-zod-error-msgs';
+import { redirect } from 'next/navigation';
 import { formatError } from 'zod';
 
 type LoginActionState = {
@@ -66,13 +68,14 @@ export async function loginAction(
   }
 
   //Received valid credentials, create cookie and redirect page
-  //await createLoginSession(email);
-  //redirect('/admin/post');
+  await createLoginSessionFromApi(loginResponse.data.accessToken);
+  redirect('/admin/post');
 
   //unreachable code
-
+  /*
   return {
     email: '',
     errors: ['Success.'],
   };
+  */
 }
