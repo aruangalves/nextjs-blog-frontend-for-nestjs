@@ -9,6 +9,7 @@ import {
   HouseIcon,
   LogOutIcon,
   MenuIcon,
+  UserPenIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -57,6 +58,11 @@ export function MenuAdmin() {
         <HouseIcon />
         Home
       </a>
+
+      <Link href='/admin/user' className={linkClasses}>
+        <UserPenIcon />
+        Perfil
+      </Link>
 
       <Link href='/admin/post' className={linkClasses}>
         <FileTextIcon />
