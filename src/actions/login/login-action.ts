@@ -3,8 +3,8 @@
 import { createLoginSessionFromApi } from '@/lib/login/manage-login';
 import { LoginSchema } from '@/lib/login/schema';
 import { apiRequest } from '@/utils/api-request';
-import { asyncDelay } from '@/utils/async-delay';
 import { getZodErrorMessages } from '@/utils/get-zod-error-msgs';
+import { verifyHoneypotInput } from '@/utils/verify-honeypot-input';
 import { redirect } from 'next/navigation';
 import { formatError } from 'zod';
 
@@ -25,7 +25,14 @@ export async function loginAction(
     };
   }
   //this response delay is deliberate to mitigate bruteforce attacks
-  await asyncDelay(2000);
+  //await asyncDelay(2000);
+  const isBot = await verifyHoneypotInput(formData, 2000);
+  if (isBot) {
+    return {
+      email: '',
+      errors: ['nice'],
+    };
+  }
 
   const errorMsg = 'Dados inválidos, por favor tente novamente.';
 
