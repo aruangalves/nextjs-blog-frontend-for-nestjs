@@ -9,8 +9,8 @@ import { useActionState } from 'react';
 
 export function LoginForm() {
   const initialState = {
-    username: '',
-    error: '',
+    email: '',
+    errors: [],
   };
   const [loginState, action, isPending] = useActionState(
     loginAction,
@@ -21,12 +21,13 @@ export function LoginForm() {
     <form action={action} className='flex-1 flex flex-col gap-4 pb-8'>
       <h1 className='text-4xl font-bold'>Login</h1>
       <InputText
-        type='text'
-        name='username'
-        labelText='Usuário'
-        placeholder='Nome de usuário'
+        type='email'
+        name='email'
+        labelText='E-mail'
+        placeholder='Digite seu e-mail'
         disabled={isPending}
-        defaultValue={loginState.username}
+        defaultValue={loginState.email}
+        required
       />
       <InputText
         type='password'
@@ -34,6 +35,7 @@ export function LoginForm() {
         labelText='Senha'
         placeholder='Digite sua senha'
         disabled={isPending}
+        required
       />
       <Button disabled={isPending} type='submit' className='mt-8'>
         <LogInIcon /> Entrar
@@ -48,9 +50,16 @@ export function LoginForm() {
         </Link>
       </p>
 
-      {!!loginState.error && (
+      {loginState.errors.length > 0 && (
         <p className='text-red-700 text-center p-4 mt-4 bg-slate-100 rounded-[0.5rem] border border-slate-300'>
-          {loginState.error}
+          {loginState.errors.map((error, index) => {
+            return (
+              <span key={`loginerr-${index}`}>
+                {error}
+                <br />
+              </span>
+            );
+          })}
         </p>
       )}
     </form>

@@ -1,12 +1,14 @@
 'use server';
 
-import { createLoginSession, verifyPassword } from '@/lib/login/manage-login';
+import { LoginSchema } from '@/lib/login/schema';
+import { apiRequest } from '@/utils/api-request';
 import { asyncDelay } from '@/utils/async-delay';
-import { redirect } from 'next/navigation';
+import { getZodErrorMessages } from '@/utils/get-zod-error-msgs';
+import { formatError } from 'zod';
 
 type LoginActionState = {
-  username: string;
-  error: string;
+  email: string;
+  errors: string[];
 };
 
 export async function loginAction(
@@ -16,8 +18,8 @@ export async function loginAction(
   const allowLogin = Boolean(Number(process.env.ALLOW_LOGIN));
   if (!allowLogin) {
     return {
-      username: '',
-      error: 'Login is not allowed',
+      email: '',
+      errors: ['Login is not allowed'],
     };
   }
   //this response delay is deliberate to mitigate bruteforce attacks
@@ -27,36 +29,50 @@ export async function loginAction(
 
   if (!(formData instanceof FormData)) {
     return {
-      username: '',
-      error: errorMsg,
+      email: '',
+      errors: [errorMsg],
     };
   }
 
-  const username = formData.get('username')?.toString().trim() || '';
-  const password = formData.get('password')?.toString().trim() || '';
+  //Validar dados
+  const formObj = Object.fromEntries(formData.entries());
+  const formEmail = formObj?.email?.toString() || '';
+  const parsedFormData = LoginSchema.safeParse(formObj);
 
-  if (!username || !password) {
-    return { username: username, error: errorMsg };
+  if (!parsedFormData.success) {
+    return {
+      email: formEmail,
+      errors: getZodErrorMessages(formatError(parsedFormData.error)),
+    };
   }
 
-  const isUsernameValid = username === process.env.LOGIN_USER;
-
-  const isPasswordValid = await verifyPassword(
-    password,
-    process.env.LOGIN_PASSWORD || '',
+  //Fetch API NestJS
+  const loginResponse = await apiRequest<{ accessToken: string }>(
+    '/auth/login',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(parsedFormData.data),
+    },
   );
 
-  if (!isUsernameValid || !isPasswordValid) {
-    return { username: username, error: errorMsg };
+  if (!loginResponse.success) {
+    return {
+      email: formEmail,
+      errors: loginResponse.errors,
+    };
   }
 
   //Received valid credentials, create cookie and redirect page
-  await createLoginSession(username);
-  redirect('/admin/post');
+  //await createLoginSession(email);
+  //redirect('/admin/post');
 
   //unreachable code
-  /*return {
-    username: username,
-    error: 'Usuário logado com sucesso.',
-  };*/
+
+  return {
+    email: '',
+    errors: ['Success.'],
+  };
 }
