@@ -1,3 +1,5 @@
+'use client';
+
 import { updatePasswordAction } from '@/actions/user/update-user-password-action';
 import { Button } from '@/components/Button';
 import { InputText } from '@/components/InputText';
