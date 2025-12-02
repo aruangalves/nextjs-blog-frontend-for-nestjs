@@ -1,6 +1,5 @@
 'use client';
 
-import clsx from 'clsx';
 import { Button } from '../Button';
 import { CheckIcon, XIcon } from 'lucide-react';
 
