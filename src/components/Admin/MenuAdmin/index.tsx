@@ -61,7 +61,7 @@ export function MenuAdmin() {
 
       <Link href='/admin/user' className={linkClasses}>
         <UserPenIcon />
-        Perfil
+        Usuário
       </Link>
 
       <Link href='/admin/post' className={linkClasses}>
